@@ -1,0 +1,27 @@
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+tasks = {}
+
+@app.route('/add_task', methods=['POST'])
+def add_task():
+    data = request.json
+    task_name = data['task_name']
+    due_date = data['due_date']
+    tasks[task_name] = {'due_date': due_date}
+    return jsonify({'message': f"Task '{task_name}' added with due date {due_date}."}), 200
+
+@app.route('/notify', methods=['GET'])
+def notify():
+    task_name = request.args.get('task_name')
+    if task_name in tasks:
+        task = tasks[task_name]
+        return jsonify({
+            'message': f"Task '{task_name}' is due on {task['due_date']}."
+        }), 200
+    else:
+        return jsonify({'error': 'Task not found'}), 404
+
+if __name__ == '__main__':
+    app.run(debug=True)

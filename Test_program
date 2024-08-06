@@ -1,0 +1,30 @@
+import requests
+
+def add_task(task_name, due_date):
+    url = 'http://127.0.0.1:5000/add_task'
+    data = {
+        'task_name': task_name,
+        'due_date': due_date
+    }
+    response = requests.post(url, json=data)
+    if response.status_code == 200:
+        print(response.json()['message'])
+    else:
+        print(f"Error: {response.json()['error']}")
+
+def notify(task_name):
+    response = requests.get(f'http://127.0.0.1:5000/notify?task_name={task_name}')
+    if response.status_code == 200:
+        print(response.json()['message'])
+    else:
+        print(f"Error: {response.json()['error']}")
+
+if __name__ == '__main__':
+    # Add a task
+    task_name = input("Enter the task name: ")
+    due_date = input("Enter the due date (YYYY-MM-DD): ")
+    add_task(task_name, due_date)
+
+    # Notify about the task
+    task_name = input("Enter the task name to get notification: ")
+    notify(task_name)
